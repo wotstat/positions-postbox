@@ -23,7 +23,6 @@ function Card({ children, style }: { children: React.ReactNode, style?: React.CS
       borderRadius: '12px',
       marginBottom: '15px',
       backgroundColor: '#fff',
-      boxShadow: '0 0 10px rgba(0, 0, 0, 0.05)',
       ...style,
     }}>
       {children}
@@ -222,7 +221,6 @@ export default function Confirmation(props: ConfirmationOptions) {
               backgroundColor: '#d8d8d8',
               height: '1px',
               borderRadius: '1px',
-              boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)',
               width: '100%',
             }}
           />
