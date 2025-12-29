@@ -1,15 +1,22 @@
 {
   "name": "positions-postbox",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "email:dev": "email dev"
   },
   "dependencies": {
     "@aws-sdk/client-sesv2": "^3.958.0",
+    "@react-email/components": "1.0.2",
     "@ydbjs/core": "^6.0.7",
     "@ydbjs/query": "^6.0.7",
-    "hono": "^4.11.1"
+    "hono": "^4.11.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@react-email/preview-server": "5.1.0",
+    "@types/bun": "latest",
+    "@types/react": "^19.2.7",
+    "react-email": "5.1.0"
   }
 }

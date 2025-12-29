@@ -28,8 +28,9 @@ async function sendEmail(order: Order, keys: OrderLines, receipt: { id: string, 
     endpoint: 'https://postbox.cloud.yandex.net',
   })
 
-  const emailContent = render({
+  const emailContent = await render({
     orderId: order.uid,
+    name: order.name,
     datetime: order.created,
     totalAmount: order.totalAmount,
     quantity: order.quantity,

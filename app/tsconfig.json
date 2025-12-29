@@ -3,6 +3,8 @@
     "lib": [
       "ESNext"
     ],
+    "jsxImportSource": "react",
+    "jsx": "react-jsx",
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",
