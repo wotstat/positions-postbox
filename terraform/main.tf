@@ -92,7 +92,7 @@ resource "yandex_iam_service_account_static_access_key" "postbox_sender_key" {
 
 resource "yandex_serverless_container" "container" {
   name               = local.project_name
-  memory             = 128
+  memory             = 512
   cores              = 1
   core_fraction      = 5
   concurrency        = 16

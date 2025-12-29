@@ -200,7 +200,7 @@ export default function Confirmation(props: ConfirmationOptions) {
               props.receipt ? (
                 <>
                   <Text style={{ fontSize: '14px', lineHeight: '1.6', color: '#374151', marginTop: '10px', marginBottom: '0' }}>
-                    Чек <span>{props.receipt.id}</span> доступен по ссылке: <Link href={props.receipt.url} style={{ color: '#2563eb', textDecoration: 'underline' }}>{props.receipt.url}</Link>
+                    Чек №<span>{props.receipt.id}</span> доступен по ссылке: <Link href={props.receipt.url} style={{ color: '#2563eb', textDecoration: 'underline' }}>{props.receipt.url}</Link>
                   </Text>
                 </>
               ) : null

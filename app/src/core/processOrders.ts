@@ -41,7 +41,7 @@ async function sendEmail(order: Order, keys: OrderLines, receipt: { id: string, 
 
   const command = new SendEmailCommand({
     Destination: {
-      ToAddresses: ['soprachev@mail.ru'],
+      ToAddresses: [order.email],
     },
     ReplyToAddresses: ['support@wotstat.info'],
     Content: {
@@ -96,8 +96,7 @@ async function createReceipt(options: { amount: number, name: string, quantity: 
 }
 
 function shouldCreateReceipt(order: Order) {
-  return order.paymentMethod == 'yookassa' &&
-    order.email == 'soprachev@mail.ru'
+  return order.paymentMethod == 'yookassa'
 }
 
 export async function processOrders() {
