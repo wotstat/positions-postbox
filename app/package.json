@@ -1,0 +1,15 @@
+{
+  "name": "positions-postbox",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.958.0",
+    "@ydbjs/core": "^6.0.7",
+    "@ydbjs/query": "^6.0.7",
+    "hono": "^4.11.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
