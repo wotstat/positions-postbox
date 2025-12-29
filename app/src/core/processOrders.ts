@@ -146,7 +146,7 @@ export async function processOrders() {
       }
 
       if (receipt) {
-        await sql`insert into ${receiptsTable} values
+        await sql`insert into ${receiptsTable} (orderId, receiptId, url, datetime) values
           (${item.uid}, ${receipt.id}, ${receipt.url}, ${new Date()})
         `;
       }
