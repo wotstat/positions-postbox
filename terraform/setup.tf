@@ -11,12 +11,16 @@ terraform {
   }
 
   backend "s3" {
-    endpoint = "storage.yandexcloud.net"
-    region   = "ru-central1"
-    key      = "main/positions-postbox.tfstate"
+    endpoints = {
+      s3 = "https://storage.yandexcloud.net"
+    }
+    region = "ru-central1"
+    key    = "main/positions-postbox.tfstate"
 
     skip_region_validation      = true
     skip_credentials_validation = true
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
   }
 }
 
