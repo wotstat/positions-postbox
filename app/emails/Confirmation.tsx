@@ -124,7 +124,7 @@ function HowToActivate() {
         }))
       }
       <Text style={{ marginBottom: 0 }}>
-        Если активировать не получается или у вас возникли любые вопросы — просто ответьте на это письмо или напишите на <a href="mailto:support@wotstat.info" style={{ color: '#2563eb', textDecoration: 'underline' }}>support@wotstat.info</a>
+        Если активировать не получается или у вас возникли любые вопросы — просто ответьте на это письмо или напишите на <Link href="mailto:support@wotstat.info" style={{ textDecoration: 'underline' }}>support@wotstat.info</Link>
       </Text>
     </Card>
   )
@@ -134,8 +134,8 @@ export default function Confirmation(props: ConfirmationOptions) {
   return (
     <Html>
       <Head />
-      <Body style={{ backgroundColor: '#f6f7f9', margin: 0, padding: '16px', fontFamily: 'Arial, Helvetica, sans-serif', color: '#151c26' }}>
-        <Container>
+      <Body style={{ backgroundColor: '#f6f7f9', margin: 0, padding: '10px', fontFamily: 'Arial, Helvetica, sans-serif', color: '#151c26' }}>
+        <Container style={{ maxWidth: 1000 }}>
           <Card style={{
             fontWeight: 'bold', marginBottom: '15px', padding: '10px 20px', backgroundColor: '#1290ff', color: '#ffffff',
             border: '1px solid #1290ff'
@@ -200,7 +200,7 @@ export default function Confirmation(props: ConfirmationOptions) {
               props.receipt ? (
                 <>
                   <Text style={{ fontSize: '14px', lineHeight: '1.6', color: '#374151', marginTop: '10px', marginBottom: '0' }}>
-                    Чек №<span>{props.receipt.id}</span> доступен по ссылке: <Link href={props.receipt.url} style={{ color: '#2563eb', textDecoration: 'underline' }}>{props.receipt.url}</Link>
+                    Чек <span style={{ color: '#151c26' }}>№{props.receipt.id}</span> доступен по ссылке: <Link href={props.receipt.url} style={{ textDecoration: 'underline', wordBreak: 'break-word' }}>{props.receipt.url}</Link>
                   </Text>
                 </>
               ) : null
@@ -230,7 +230,7 @@ export default function Confirmation(props: ConfirmationOptions) {
               Если вы не совершали эту покупку, проигнорируйте это письмо.
             </Text>
             <Text style={{ fontSize: '14px', margin: 5 }}>
-              Сайт: <Link href="https://ru.positions.wotstat.info" style={{ color: '#2563eb', textDecoration: 'underline' }}>positions.wotstat.info</Link>
+              Сайт: <Link href="https://ru.positions.wotstat.info" style={{ textDecoration: 'underline' }}>positions.wotstat.info</Link>
             </Text>
           </Section>
         </Container>
