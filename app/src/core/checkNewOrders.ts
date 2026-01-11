@@ -1,3 +1,4 @@
+import logger from "../logger";
 import { orders as loadMolzOrders, PaymentMethod, PaymentStatus, getPaymentMethod, getPaymentStatus } from "./molz/api";
 
 const LOAD_PER_PAGE = 30
@@ -23,7 +24,7 @@ export async function loadLastOrders(timeLimit: number) {
     const orders = await loadMolzOrders(page + 1, LOAD_PER_PAGE)
 
     if (!('results' in orders)) {
-      console.error('Error loading orders from Molz', orders);
+      logger.error('Error loading orders from Molz', orders);
       break
     }
 
