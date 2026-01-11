@@ -21,6 +21,12 @@ export async function loadLastOrders(timeLimit: number) {
     if (lastResultAgo > timeLimit) break
 
     const orders = await loadMolzOrders(page + 1, LOAD_PER_PAGE)
+
+    if (!('results' in orders)) {
+      console.error('Error loading orders from Molz', orders);
+      break
+    }
+
     const processed = orders.results.map(o => ({
       uid: o.uid,
       name: o.product_name,
