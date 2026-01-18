@@ -94,8 +94,9 @@ resource "yandex_serverless_container" "container" {
   name               = local.project_name
   memory             = 512
   cores              = 1
-  core_fraction      = 50
+  core_fraction      = 5
   concurrency        = 16
+  execution_timeout  = "60s"
   folder_id          = var.folder_id
   service_account_id = yandex_iam_service_account.container_owner.id
 

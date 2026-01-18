@@ -179,7 +179,8 @@ export class NalogAPI {
       },
       referrer: 'https://lknpd.nalog.ru/sales/create',
       referrerPolicy: 'strict-origin-when-cross-origin',
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(10000)
     } satisfies BunFetchRequestInit
 
     if (method === 'GET') delete params.body

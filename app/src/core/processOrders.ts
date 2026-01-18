@@ -145,9 +145,14 @@ export async function processOrders() {
       }
 
       if (receipt) {
-        await sql`insert into ${receiptsTable} (orderId, receiptId, url, datetime) values
+        try {
+          await sql`insert into ${receiptsTable} (orderId, receiptId, url, datetime) values
           (${item.uid}, ${receipt.id}, ${receipt.url}, ${new Date()})
         `;
+
+        } catch (error) {
+          logger.error(`Error saving receipt for order ${item.uid}`, error);
+        }
       }
     }
 
@@ -162,5 +167,9 @@ export async function processOrders() {
 
   logger.debug(`Found ${newOrders.length} new completed orders`, newOrders);
 
-  await sql`insert into ${emailTable} select * from AS_TABLE(${sended})`
+  try {
+    await sql`upsert into ${emailTable} select * from AS_TABLE(${sended})`
+  } catch (error) {
+    logger.error('Error saving processed orders', error);
+  }
 }
