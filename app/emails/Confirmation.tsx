@@ -87,9 +87,10 @@ function TutorialLine({ number, title, description }: { number: number, title: s
             style={{
               color: '#4d5567',
               fontSize: '14px',
-              lineHeight: '1.6',
+              lineHeight: '1.4',
               margin: '0px',
             }}
+            className="tutorial-description"
           >
             {description}
           </Text>
@@ -130,10 +131,21 @@ function HowToActivate() {
   )
 }
 
+const mediaStyles = `
+  @media (max-width: 480px) {
+    .tutorial-description {
+      margin-left: -40px !important;
+    }
+  }
+`;
+
 export default function Confirmation(props: ConfirmationOptions) {
   return (
     <Html>
-      <Head />
+      <Head>
+        <style dangerouslySetInnerHTML={{ __html: mediaStyles }} />
+      </Head>
+
       <Body style={{ backgroundColor: '#f6f7f9', margin: 0, padding: '10px', fontFamily: 'Arial, Helvetica, sans-serif', color: '#151c26' }}>
         <Container style={{ maxWidth: 1000 }}>
           <Card style={{
@@ -149,16 +161,16 @@ export default function Confirmation(props: ConfirmationOptions) {
 
             <Section style={{ border: '1px solid #e5e7eb', borderRadius: '10px', backgroundColor: '#f9fafb', padding: '10px' }}>
               {props.keys.map((key, index) => (
-                <Text key={index} style={{ margin: 0, fontFamily: 'Consolas,Menlo,Monaco,monospace', lineHeight: '1.5' }}>{key}</Text>
+                <Text key={index} style={{ margin: 0, fontFamily: 'Consolas,Menlo,Monaco,monospace', lineHeight: '1.3' }}>{key}</Text>
               ))}
             </Section>
 
             {
               props.keys.length > 1 ? (
                 <>
-                  <Text style={{ fontSize: '14px', marginBottom: 0 }}>
+                  <Text style={{ fontSize: '14px', marginBottom: 0, lineHeight: '1.2' }}>
                     Ключи не складываются друг с другом<br />
-                    <span style={{ color: '#6b7280' }}>
+                    <span style={{ color: '#6b7280', marginTop: '7px', display: 'inline-block' }}>
                       Дождитесь окончания лицензии первого ключа, чтобы активировать следующий. Срок действия лицензии начинается после первого боя.
                     </span>
                   </Text>
