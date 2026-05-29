@@ -1,5 +1,5 @@
 
-const SESSION_ID = Bun.env.MOLZ_SESSION_TOKEN || '26ldqxmbhdzp5avhfn5bhws5r1h5t0is'
+const SESSION_ID = Bun.env.MOLZ_SESSION_TOKEN
 
 export type Orders = {
   results: Array<{
