@@ -4,6 +4,7 @@
       "ESNext"
     ],
     "jsxImportSource": "react",
+    "types": ["bun"],
     "jsx": "react-jsx",
     "module": "esnext",
     "target": "esnext",

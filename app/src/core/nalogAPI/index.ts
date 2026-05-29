@@ -37,7 +37,7 @@ export class NalogAPI {
   private tokenExpireIn: string
   private refreshToken: string
 
-  constructor({ login, password, autologin = true }: { login?: string, password?: string, autologin?: boolean } = {}) {
+  constructor({ login, password, autologin = true }: { login: string, password: string, autologin?: boolean }) {
     if (autologin && (!login || !password)) {
       throw new SyntaxError('NalogAPI required login+password for auth')
     }
@@ -183,7 +183,11 @@ export class NalogAPI {
       signal: AbortSignal.timeout(10000)
     } satisfies BunFetchRequestInit
 
-    if (method === 'GET') delete params.body
+    if (method === 'GET') {
+      // avoid TypeScript error "The operand of a 'delete' operator must be optional"
+      // cast to any so we can remove the body for GET requests
+      delete (params as any).body
+    }
 
     return fetch(this.apiUrl + '/' + endpoint, params).then(r => r.json())
   }
@@ -195,22 +199,22 @@ export class NalogAPI {
    * @param  {} amount - стоимость
    * @returns {Promise({id,printUrl,jsonUrl,data,approvedReceiptUuid})} - информация о созданном чеке, либо об ошибке
    */
-  async addIncome({ date = new Date(), name, quantity = 1, amount }: { date?: Date, name: string, quantity?: number, amount: number }) {
+  async addIncome(ctx: { date?: Date, totalAmount: number, items: { name: string, amount: number, quantity?: number }[] }) {
     const response = await this.call('income', {
       paymentType: 'CASH',
       ignoreMaxTotalIncomeRestriction: false,
       client: { contactPhone: null, displayName: null, incomeType: 'FROM_INDIVIDUAL', inn: null },
 
       requestTime: this.dateToLocalISO(),
-      operationTime: this.dateToLocalISO(date),
+      operationTime: this.dateToLocalISO(ctx.date),
 
-      services: [{
-        name: name, // 'Предоставление информационных услуг #970/2495',
-        amount: Number(amount.toFixed(2)),
-        quantity: Number(quantity)
-      }],
+      services: ctx.items.map(i => ({
+        name: i.name,
+        amount: Number(i.amount.toFixed(2)),
+        quantity: i.quantity || 1
+      })),
 
-      totalAmount: (amount * quantity).toFixed(2)
+      totalAmount: ctx.totalAmount.toFixed(2)
     })
 
     if (!response || !response.approvedReceiptUuid) {

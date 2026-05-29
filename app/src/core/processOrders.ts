@@ -1,9 +1,8 @@
 import { identifier } from "@ydbjs/query";
-import { loadLastOrders } from "./checkNewOrders";
+import { loadLastOrders, loadOrderInfo } from "./checkNewOrders";
 import { sql } from "../db/ydb";
 import { logger } from "../logger";
-import { lines as loadMolzLines, OrderLines } from "./molz/api";
-import { SESv2Client, SendEmailCommand, SendEmailCommandInput } from '@aws-sdk/client-sesv2';
+import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { NalogAPI } from "./nalogAPI";
 import { render } from "./email";
 
@@ -17,11 +16,11 @@ const receiptsTable = identifier('shop/receipts')
 let client: SESv2Client | null = null;
 let nalog: NalogAPI | null = null;
 
-type Order = Awaited<ReturnType<typeof loadLastOrders>>[0];
+type ListOrder = Awaited<ReturnType<typeof loadLastOrders>>[0];
+type OrderInfo = Awaited<ReturnType<typeof loadOrderInfo>>;
 
-
-async function sendEmail(order: Order, keys: OrderLines, receipt: { id: string, url: string } | null) {
-  logger.info(`Send email for order ${order.uid} to ${order.email}: ${keys.join(', ')}`, order);
+async function sendEmail(order: OrderInfo, receipt: { id: string, url: string } | null) {
+  logger.info(`Send email for order ${order.uid} to ${order.email}: ${order.keys.join(', ')}`, order);
 
   if (!client) client = new SESv2Client({
     region: 'ru-central1',
@@ -30,12 +29,12 @@ async function sendEmail(order: Order, keys: OrderLines, receipt: { id: string, 
 
   const emailContent = await render({
     orderId: order.uid,
-    name: order.name,
+    name: order.productName,
     datetime: order.created,
     totalAmount: order.totalAmount,
     quantity: order.quantity,
     paymentMethod: order.paymentMethod,
-    keys: keys,
+    keys: order.keys,
     receipt: receipt || undefined
   });
 
@@ -67,7 +66,11 @@ export async function processOrdersSafe() {
   }
 }
 
-async function createReceipt(options: { amount: number, name: string, quantity: number, date?: Date }): Promise<{ id: string, url: string } | null> {
+async function createReceipt(options: {
+  totalAmount: number,
+  items: { name: string, amount: number, quantity?: number }[],
+  date?: Date
+}): Promise<{ id: string, url: string } | null> {
 
   try {
     if (!nalog) nalog = new NalogAPI({
@@ -77,9 +80,8 @@ async function createReceipt(options: { amount: number, name: string, quantity: 
 
     const res = await nalog.addIncome({
       date: options.date || new Date(),
-      name: options.name,
-      amount: options.amount,
-      quantity: options.quantity
+      totalAmount: options.totalAmount,
+      items: options.items
     })
 
     if ('error' in res) {
@@ -95,7 +97,7 @@ async function createReceipt(options: { amount: number, name: string, quantity: 
   }
 }
 
-function shouldCreateReceipt(order: Order) {
+function shouldCreateReceipt(order: ListOrder) {
   return order.paymentMethod == 'yookassa'
 }
 
@@ -124,10 +126,12 @@ export async function processOrders() {
 
   let sended: { orderId: string, confirmation: string, datetime: Date }[] = []
   for (const item of newOrders) {
-    let keys: OrderLines = [];
-    try { keys = await loadMolzLines(item.uid); }
-    catch (e) {
-      logger.error(`Error loading keys for order ${item.uid}`, e);
+
+    let order: OrderInfo | null = null;
+    try {
+      order = await loadOrderInfo(item.uid);
+    } catch (error) {
+      logger.error(`Error loading order info ${item.uid}`, error);
       continue;
     }
 
@@ -135,10 +139,9 @@ export async function processOrders() {
     if (shouldCreateReceipt(item) && !receiptsIds.has(item.uid)) {
       try {
         receipt = await createReceipt({
-          amount: item.totalAmount / item.quantity,
-          name: item.name,
-          quantity: item.quantity,
-          date: item.created
+          date: item.created,
+          totalAmount: item.totalAmount,
+          items: order.items
         });
       } catch (error) {
         logger.error(`Error creating receipt for order ${item.uid}`, error);
@@ -157,8 +160,8 @@ export async function processOrders() {
     }
 
     try {
-      const confirmation = await sendEmail(item, keys, receipt);
-      sended.push({ orderId: item.uid, confirmation: confirmation, datetime: new Date() });
+      const confirmation = await sendEmail(order, receipt);
+      sended.push({ orderId: item.uid, confirmation: confirmation ?? '', datetime: new Date() });
     } catch (error) {
       logger.error(`Error sending email for order ${item.uid}`, error);
       continue;

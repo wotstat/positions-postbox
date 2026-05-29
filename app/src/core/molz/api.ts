@@ -4,16 +4,16 @@ const SESSION_ID = Bun.env.MOLZ_SESSION_TOKEN || '26ldqxmbhdzp5avhfn5bhws5r1h5t0
 export type Orders = {
   results: Array<{
     uid: string
-    product: number
-    product_name: string
     payment_method: number
     payment_status: number
-    quantity: number
     currency: number
     total_amount: string
     buyer_email: string
     buyer_country: string
     created: string
+    items: Array<{
+      product_name: string
+    }>
   }>
   paging: {
     limit: number
@@ -21,6 +21,38 @@ export type Orders = {
     pages: number
     total: number
   }
+}
+
+export type Order = {
+  uid: string
+  items: Array<{
+    product: {
+      id: number
+      name: string
+      type: number
+      picture_url: {
+        original: string
+        thumbnail: string
+      }
+    }
+    product_name: string
+    status: number
+    quantity: number
+    discount: any
+    discount_name: string
+    amount: string
+    discount_amount: string
+    total_amount: string
+  }>
+  payment_method: number
+  payment_status: number
+  buyer_country: string
+  buyer_email: string
+  meta_fields: any
+  amount: string
+  discount_amount: string
+  total_amount: string
+  created: string
 }
 
 export type OrderLines = string[]
@@ -58,8 +90,18 @@ export async function orders(page = 1, limit = 50) {
   return data as Orders
 }
 
-export async function lines(orderId: string) {
-  const response = await fetch(`https://api.molz.io/v1/orders/${orderId}/lines`, {
+export async function order(orderId: string) {
+  const response = await fetch(`https://api.molz.io/v1/orders/${orderId}`, {
+    headers: { 'Cookie': `sessionid=${SESSION_ID}` }
+  })
+
+  const data = await response.json()
+
+  return data as Order
+}
+
+export async function lines(orderId: string, product: number) {
+  const response = await fetch(`https://api.molz.io/v1/orders/${orderId}/lines/${product}`, {
     headers: { 'Cookie': `sessionid=${SESSION_ID}` }
   })
 
