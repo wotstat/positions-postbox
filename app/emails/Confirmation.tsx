@@ -108,7 +108,7 @@ function HowToActivate() {
         [
           {
             title: 'Установите мод', description: <>
-              Перейдите на страницу <Link href="https://ru.wotstat.info/install?preset=positions">wotstat.info/install</Link> установщика. Выберите папку с игрой и установите мод Позиции.
+              Перейдите на страницу <Link href="https://mtstat.info/install?preset=positions">wotstat.info/install</Link> установщика. Выберите папку с игрой и установите мод Позиции.
             </>
           },
           { title: 'Запустите игру', description: <></> },
